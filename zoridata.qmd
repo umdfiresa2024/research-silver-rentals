@@ -1,7 +1,38 @@
 ```{r}
-df <- read.csv("ZORI.csv")
+library("tidyverse")
 ```
 
 ```{r}
-
+df <- read.csv("ZORI_ZipCodes_Monthly_2015-2024.csv")
 ```
+
+```{r}
+df2 <- df %>%
+  pivot_longer(
+    cols = starts_with("X"),
+    names_to = "Date",
+    values_to = "ZORI"
+  )
+```
+
+```{r}
+df3 <- select(df2, -c(RegionID, SizeRank, RegionType, StateName))
+```
+
+```{r}
+df4 <- df3 %>%
+  filter(!is.na(ZORI))
+```
+
+```{r}
+df5 <- df4 %>%
+  filter(Metro == "Washington-Arlington-Alexandria, DC-VA-MD-WV")
+df6 <- select(df5, c(Date, RegionName, ZORI, State, City))
+```
+
+```{r}
+df7 <- df6 %>%
+  rename(ZipCode = RegionName) %>%
+  mutate(Date = sub('.', '', Date))
+```
+
