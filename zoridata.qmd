@@ -27,12 +27,16 @@ df4 <- df3 %>%
 ```{r}
 df5 <- df4 %>%
   filter(Metro == "Washington-Arlington-Alexandria, DC-VA-MD-WV")
-df6 <- select(df5, c(Date, RegionName, ZORI, State, City))
+df6 <- select(df5, c(Date, RegionName, ZORI, State, CountyName, City))
 ```
 
 ```{r}
 df7 <- df6 %>%
   rename(ZipCode = RegionName) %>%
   mutate(Date = sub('.', '', Date))
+```
+
+```{r}
+write.csv(df7, "ZORI_clean.csv")
 ```
 
