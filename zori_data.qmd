@@ -34,6 +34,8 @@ df6 <- select(df5, c(Date, RegionName, ZORI, State, CountyName, City))
 df7 <- df6 %>%
   rename(ZipCode = RegionName) %>%
   mutate(Date = sub('.', '', Date))
+
+write.csv(df7, "zori.csv", row.names = F)
 ```
 
 ```{r}
