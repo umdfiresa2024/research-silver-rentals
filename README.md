@@ -1,5 +1,4 @@
-# How did the opening of the Silver Line of the Washington Metro System
-impact adjacent rental prices?
+# How did the opening of the Silver Line of the Washington Metro System impact adjacent rental prices?
 
 
 Step 1. Install necessary packages.
