@@ -10,6 +10,12 @@ metrodf<-as.data.frame(metro)
 st1<-c("Wiehle-Reston East", "Spring Hill", "Greensboro", "Tysons", "McLean")
 st2<-c("Ashburn", "Loudoun Gateway", "Dulles International Airport", 
        "Innovation Center", "Herndon", "Reston Town Center")
+st3<-c("Vienna/Fairfax-GMU", "Dunn Loring-Merrifield", "West Falls Church",
+       "East Falls Church", "Ballston MU", "Virginia Square-GMU", "Clarendon",
+       "Court House", "Rosslyn", "Arlington Cemetery", "Pentagon", "Pentagon City",
+       "Crystal City", "Ronald Reagan Washington National Airport", "Potomac Yard",
+       "Braddock Road", "King St-Old Town", "Eisenhower Ave", "Huntington",
+       "Van Dorn Street", "Franconia-Springfield")
 
 #select metro that opens in 2014
 silver_2014<-buffer(subset(metro, metro$NAME %in% st1), width=2414)
@@ -50,8 +56,24 @@ va_2022_df<-as.data.frame(va_2022) |>
 plot(silver_2022, col="red", alpha=0.5)
 plot(va_project2, add=TRUE)
 
-#find zip code that intersects other metro stations in virginia ############
+#select other metro stations in Virginia
+other_stations<-buffer(subset(metro, metro$NAME %in% st3), width=2414)
 
+plot(line)
+plot(other_stations, col="green", add=TRUE)
+
+#find zip code that intersects other metro stations in virginia ############
+va3<-vect("VA/VA_Zip_Codes.shp")
+va_project3<-project(va3, crs(metro))
+va_project3<-terra::makeValid(va_project3)
+other_stations<-terra::intersect(va_project3, other_stations)
+other_stations_df<-as.data.frame(other_stations) |>
+  select(ZIP_CODE) |>
+  rename(ZIPCODE=ZIP_CODE) |>
+  mutate(open="other_stations")
+
+plot(other_stations, col="green", alpha=0.5)
+plot(va_project, add=TRUE)
 
 
 #combine everything together
