@@ -20,6 +20,7 @@ plot(silver_2014, col="blue", add=TRUE)
 #find zip code that intersects with this portion of the silver line
 va<-vect("VA/VA_Zip_Codes.shp")
 va_project<-project(va, crs(metro))
+va_project <- terra::makeValid(va_project)
 va_2014<-terra::intersect(va_project, silver_2014)
 va_2014_df<-as.data.frame(va_2014) |>
   select(ZIP_CODE) |>
@@ -31,7 +32,23 @@ plot(silver_2014, col="blue", alpha=0.5)
 plot(va_project, add=TRUE)
 
 ############execute the same task for the 2022 expansion of the silver line######
+silver_2022<-buffer(subset(metro, metro$NAME %in% st2), width=2414)
 
+plot(line)
+plot(silver_2022, col="red", add=TRUE)
+
+#find zip code that intersects with this portion of the silver line
+va2<-vect("VA/VA_Zip_Codes.shp")
+va_project2<-project(va2, crs(metro))
+va_project2 <- terra::makeValid(va_project2)
+va_2022<-terra::intersect(va_project2, silver_2022)
+va_2022_df<-as.data.frame(va_2022) |>
+  select(ZIP_CODE) |>
+  rename(ZIPCODE=ZIP_CODE) |>
+  mutate(open=2022)
+
+plot(silver_2022, col="red", alpha=0.5)
+plot(va_project2, add=TRUE)
 
 #find zip code that intersects other metro stations in virginia ############
 
