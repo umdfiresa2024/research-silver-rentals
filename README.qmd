@@ -1,5 +1,5 @@
 ---
-title: "How did the opening of the Silver Line of the Washington Metro System impact adjacent rental prices?"
+title: "How did the expansion of the Silver Line of the Washington Metro System impact adjacent rental prices?"
 format: gfm
 editor: visual
 ---
@@ -7,8 +7,8 @@ editor: visual
 Step 1. Install necessary packages.
 
 ```{r}
-install.packages("tidyverse")
-install.packages("kableExtra")
+#install.packages("tidyverse")
+#install.packages("kableExtra")
 ```
 
 Step 2. Declare that you will use these packages in this session.
@@ -89,11 +89,26 @@ Answer: $$ZORI = \beta_0 + \beta_1silver + \epsilon$$
 
 ## Question 8: What fixed effects can be included in the regression? What does each fixed effects control for? Please include a new equation that incorporates the fixed effects.
 
+<<<<<<< HEAD
+Answer: $$ZORI_{zm} = \beta_1 silver_z + \beta_2 + \epsilon_{zm}$$
+
+Where $z$ represents the zip code and $m$ represents the current month
+=======
 Answer: $$ZORI = \beta_0 + \beta_1 silver + \beta_2 city + \beta_3 zip\_code + \beta_4 month + \beta_5 year + \epsilon$$
+>>>>>>> d011a6ee49435fa1ba7e3103cb6a571d6b033df4
 
 ## Question 9: What is the impact of the treatment effect once fixed effects are included?
 
 ```{r}
+<<<<<<< HEAD
+model2 <- lm(ZORI ~ silver + post + silver:post + dist + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(ZIPCODE), data=df)
+model3 <- lm(log(ZORI) ~ silver + post + silver:post + dist + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(ZIPCODE), data=df)
+model4 <- lm(ZORI ~ silver + post + silver:post + dist + exptime + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(ZIPCODE), data=df)
+# summary(model2)
+summary(model4)
+```
+
+=======
 model2 <- lm(ZORI ~ silver + as.factor(City) + as.factor(ZIPCODE) + as.factor(month) + as.factor(year), data=df2)
 summary(model2)
 ```
@@ -102,21 +117,24 @@ summary(model2)
 
 Answer: When fixed effects are included, the silver line's effect jumps from 188 to 630.
 
+>>>>>>> d011a6ee49435fa1ba7e3103cb6a571d6b033df4
 # Questions for Week 5
 
 ## Question 10: In a difference-in-differences (DiD) model, what is the treatment GROUP?
 
-Answer:
+Answer: The zip codes containing the new section of the silver line
 
-## Question 11: In a DiD model, what are the control groups?
+## Question 11: In a DiD model, what are the untreated groups?
 
-Answer:
+Answer: The zip codes in Virginia not containing the new silver line expansion
 
 ## Question 12: What is the DiD regression equation that will answer your research question?
 
-## Question 13: Run your DiD regressions below. What are the results of the DiD regression?
+Answer: $$ZORI = \beta_1 dist + \beta_2 silver + \beta_3 post + \beta_4 (silver \times post) + \gamma_{city} + \theta_{zip\_code} + \zeta_{month} + \iota_{year} + \lambda_{City} + \epsilon$$
 
-## Question 14: What are the next steps of your research?
+## Question 13: What are the results of the DiD regression?
+
+Answer: The opening of the expansion of the silver line increased house rental prices by an amount that isn't statistically significant(\$2.06).
 
 Step 9: Change the document format to gfm
 
@@ -127,3 +145,7 @@ Step 11: Render the document. README.md file should be created after this proces
 Step 12: Push the document back to GitHub and observe your beautiful document in your repository!
 
 Step 13: If your team has a complete dataframe that includes both the treated and outcome variable, you are done with the assignment. If not, make a research plan in Notion to collect data on the outcome and treatment variable and combine it into one dataframe.
+
+## Future Plans:
+
+The house rental prices may not have adjusted immediately as the expansion of the silver line opened. As such, including the time since the expansion opened may help us better understand the silver line's effects on rental prices.
