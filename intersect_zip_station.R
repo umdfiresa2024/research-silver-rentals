@@ -77,4 +77,5 @@ plot(va_project, add=TRUE)
 
 
 #combine everything together
-zips<-rbind(va_2014_df, va_2022_df)
+zips<-rbind(va_2014_df, va_2022_df, other_stations_df)
+write.csv(zips, "intersect_zip_station.csv")
