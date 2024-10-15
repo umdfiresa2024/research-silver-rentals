@@ -12,17 +12,10 @@ st2<-c("Ashburn", "Loudoun Gateway", "Dulles International Airport",
        "Innovation Center", "Herndon", "Reston Town Center")
 
 #select metro that opens in 2014
-silver_st1<-subset(metro, metro$NAME %in% st1)
-
-#create area to crop silver line shapefile
-silver_st1_buff<-buffer(as.lines(silver_st1), width=1000)
-
-#create a buffer around this specific area of the silver line
-silver_2014<-buffer(crop(line, silver_st1_buff), width=1000)
+silver_2014<-buffer(subset(metro, metro$NAME %in% st1), width=2414)
 
 plot(line)
 plot(silver_2014, col="blue", add=TRUE)
-plot(silver_st1, col="red", add=TRUE)
 
 #find zip code that intersects with this portion of the silver line
 va<-vect("VA/VA_Zip_Codes.shp")
@@ -38,26 +31,9 @@ plot(silver_2014, col="blue", alpha=0.5)
 plot(va_project, add=TRUE)
 
 ############execute the same task for the 2022 expansion of the silver line######
-#select metro that opens in 2022
-silver_st2<-subset(metro, metro$NAME %in% st2)
 
-#create area to crop silver line shapefile
-silver_st2_buff<-buffer(as.lines(silver_st2), width=1000)
 
-#create a buffer around this specific area of the silver line
-silver_2022<-buffer(crop(line, silver_st2_buff), width=2000)
-
-va_2022<-terra::intersect(va_project, silver_2022)
-va_2022_df<-as.data.frame(va_2022) |>
-  select(ZIP_CODE) |>
-  rename(ZIPCODE=ZIP_CODE) |>
-  mutate(open=2022)
-
-plot(line)
-plot(silver_2022, col="blue", add=TRUE)
-plot(silver_st2, col="red", add=TRUE)
-
-#find zip code that intersects with this portion of the silver line############
+#find zip code that intersects other metro stations in virginia ############
 
 
 
