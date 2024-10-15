@@ -32,13 +32,19 @@ df6 <- select(df5, c(Date, RegionName, ZORI, State, CountyName, City))
 
 ```{r}
 df7 <- df6 %>%
+  group_by(RegionName) %>%
+  filter(n() >= 40)
+```
+
+
+```{r}
+df8 <- df7 %>%
   rename(ZipCode = RegionName) %>%
   mutate(Date = sub('.', '', Date))
-
-write.csv(df7, "zori.csv", row.names = F)
 ```
 
 ```{r}
-write.csv(df7, "ZORI_clean.csv")
+write.csv(df8, "zori.csv", row.names = F)
+write.csv(df8, "ZORI_clean.csv")
 ```
 
