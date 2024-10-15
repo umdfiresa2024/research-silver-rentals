@@ -24,12 +24,15 @@ Step 4. Open the dataframe into the RStudio Environment.
 
 ```{r}
 df<-read.csv("panel.csv")
+
+df2<-df %>%
+  mutate(date = as.Date(Date, format = "%Y.%m.%d"), month = month(date), year = year(date))
 ```
 
 Step 5. Use the **head** and **kable** function showcase the first 10 rows of the dataframe to the reader.
 
 ```{r}
-kable(head(df))
+kable(head(df2))
 ```
 
 ## Question 1: What is the frequency of this data frame?
@@ -43,7 +46,7 @@ Answer: Zip code
 Step 6. Use the **names** function to display all the variables (column) in the dataframe.
 
 ```{r}
-names(df)
+names(df2)
 
 ```
 
@@ -59,7 +62,7 @@ Step 7: Create a boxplot to visualize the distribution of the outcome variable u
 
 ```{r}
 #| eval: false
-ggplot(df, aes(x=ZORI)) +
+ggplot(df2, aes(x=ZORI)) +
   geom_histogram() +
   facet_wrap(~silver)
 ```
@@ -67,7 +70,7 @@ ggplot(df, aes(x=ZORI)) +
 Step 8: Fit a regression model $y=\beta_0 + \beta_1 x + \epsilon$ where $y$ is the outcome variable and $x$ is the treatment variable. Use the **summary** function to display the results.
 
 ```{r}
-model1<-lm(ZORI ~ silver, data=df)
+model1<-lm(ZORI ~ silver, data=df2)
 
 summary(model1)
 ```
@@ -86,13 +89,18 @@ Answer: $$ZORI = \beta_0 + \beta_1silver + \epsilon$$
 
 ## Question 8: What fixed effects can be included in the regression? What does each fixed effects control for? Please include a new equation that incorporates the fixed effects.
 
+<<<<<<< HEAD
 Answer: $$ZORI_{zm} = \beta_1 silver_z + \beta_2 + \epsilon_{zm}$$
 
 Where $z$ represents the zip code and $m$ represents the current month
+=======
+Answer: $$ZORI = \beta_0 + \beta_1 silver + \beta_2 city + \beta_3 zip\_code + \beta_4 month + \beta_5 year + \epsilon$$
+>>>>>>> d011a6ee49435fa1ba7e3103cb6a571d6b033df4
 
 ## Question 9: What is the impact of the treatment effect once fixed effects are included?
 
 ```{r}
+<<<<<<< HEAD
 model2 <- lm(ZORI ~ silver + post + silver:post + dist + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(ZIPCODE), data=df)
 model3 <- lm(log(ZORI) ~ silver + post + silver:post + dist + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(ZIPCODE), data=df)
 model4 <- lm(ZORI ~ silver + post + silver:post + dist + exptime + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(ZIPCODE), data=df)
@@ -100,6 +108,16 @@ model4 <- lm(ZORI ~ silver + post + silver:post + dist + exptime + as.factor(mon
 summary(model4)
 ```
 
+=======
+model2 <- lm(ZORI ~ silver + as.factor(City) + as.factor(ZIPCODE) + as.factor(month) + as.factor(year), data=df2)
+summary(model2)
+```
+
+## 
+
+Answer: When fixed effects are included, the silver line's effect jumps from 188 to 630.
+
+>>>>>>> d011a6ee49435fa1ba7e3103cb6a571d6b033df4
 # Questions for Week 5
 
 ## Question 10: In a difference-in-differences (DiD) model, what is the treatment GROUP?
