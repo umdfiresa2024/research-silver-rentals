@@ -87,7 +87,7 @@ years <- subset(years, select = -X)
 df2 <- merge(df1, years, by="ZIPCODE", all.x=TRUE) |>
   mutate(open2014=ifelse(!is.na(open) & open=="2014", 1, 0)) |>
   mutate(open2022=ifelse(!is.na(open) & open=="2022", 1, 0)) |>
-  mutate(openother=ifelse(is.na(open) | open=="other_stations", 1, 0)) |>
+  mutate(openother=ifelse(is.na(open) | open=="other_stations", 1, 0))
 df3 <- subset(df2, select = -open)
 
 df4 <- subset(df3, CountyName == 'Loudoun County' | CountyName == 'Fairfax County')
