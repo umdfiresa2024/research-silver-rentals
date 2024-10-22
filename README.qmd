@@ -52,7 +52,7 @@ names(df2)
 
 ## Question 3: Which column represents the treatment variable of interest?
 
-Answer: silver
+Answer: open2022
 
 ## Question 4: Which column represents the outcome variable of interest?
 
@@ -62,62 +62,56 @@ Step 7: Create a boxplot to visualize the distribution of the outcome variable u
 
 ```{r}
 #| eval: false
-ggplot(df2, aes(x=ZORI)) +
+df3 <- filter(df2, year=="2022")
+ggplot(df3, aes(x=ZORI)) +
   geom_histogram() +
-  facet_wrap(~silver)
+  facet_wrap(~open2022)
 ```
 
 Step 8: Fit a regression model $y=\beta_0 + \beta_1 x + \epsilon$ where $y$ is the outcome variable and $x$ is the treatment variable. Use the **summary** function to display the results.
 
 ```{r}
-model1<-lm(ZORI ~ silver, data=df2)
+
+model1<-lm(ZORI ~ open2022*post, data=df2)
 
 summary(model1)
 ```
 
 ## Question 5: What is the predicted value of the outcome variable when treatment=0?
 
-Answer: 2040.129
+Answer: 2075.458
 
 ## Question 6: What is predicted value of the outcome variable when treatment=1?
 
-Answer: 2040.129 + 188.653 = 2228.782
+Answer: 2075.458 + 426.789 = undefined
 
 ## Question 7: What is the equation that describes the linear regression above? Please include an explanation of the variables and subscripts.
 
-Answer: $$ZORI = \beta_0 + \beta_1silver + \epsilon$$
+Answer: $$ZORI = \beta_0 + \beta_1open2022:post + \epsilon$$
 
 ## Question 8: What fixed effects can be included in the regression? What does each fixed effects control for? Please include a new equation that incorporates the fixed effects.
 
-<<<<<<< HEAD
-Answer: $$ZORI_{zm} = \beta_1 silver_z + \beta_2 + \epsilon_{zm}$$
+Answer: $$ZORI_{zm} = \beta_1 open2022\times post + \beta_2 month + \beta_3 year + \beta_4 open2014 + \beta_5 openother + \beta_6 county + \beta_7 city + \epsilon_{zm}$$
 
 Where $z$ represents the zip code and $m$ represents the current month
-=======
-Answer: $$ZORI = \beta_0 + \beta_1 silver + \beta_2 city + \beta_3 zip\_code + \beta_4 month + \beta_5 year + \epsilon$$
->>>>>>> d011a6ee49435fa1ba7e3103cb6a571d6b033df4
+
+Answer: $$ZORI = \beta_0 + \beta_1 open2022:post+ \beta_2 city + \beta_3 zip\_code + \beta_4 month + \beta_5 year + \epsilon$$
 
 ## Question 9: What is the impact of the treatment effect once fixed effects are included?
 
 ```{r}
-<<<<<<< HEAD
-model2 <- lm(ZORI ~ silver + post + silver:post + dist + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(ZIPCODE), data=df)
-model3 <- lm(log(ZORI) ~ silver + post + silver:post + dist + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(ZIPCODE), data=df)
-model4 <- lm(ZORI ~ silver + post + silver:post + dist + exptime + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(ZIPCODE), data=df)
+model2 <- lm(ZORI ~ open2022 + post + open2022:post + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df)
+model3 <- lm(ZORI ~ post*open2022*dist + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df)
 # summary(model2)
-summary(model4)
+summary(model3)
 ```
 
-=======
-model2 <- lm(ZORI ~ silver + as.factor(City) + as.factor(ZIPCODE) + as.factor(month) + as.factor(year), data=df2)
-summary(model2)
-```
+model2 \<- lm(ZORI \~ silver + as.factor(City) + as.factor(ZIPCODE) + as.factor(month) + as.factor(year), data=df2) summary(model2) \`\`\`
 
 ## 
 
 Answer: When fixed effects are included, the silver line's effect jumps from 188 to 630.
 
->>>>>>> d011a6ee49435fa1ba7e3103cb6a571d6b033df4
 # Questions for Week 5
 
 ## Question 10: In a difference-in-differences (DiD) model, what is the treatment GROUP?
