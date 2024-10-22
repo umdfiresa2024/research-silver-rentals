@@ -1,6 +1,49 @@
-# How did the expansion of the Silver Line of the Washington Metro
-System impact adjacent rental prices?
+# Silver Rentals
 
+
+## How did the expansion of the Silver Line of the Washington Metro System impact residential rental prices?
+
+## Introduction: 
+
+The opening of the Silver Line of the Washington Metro System was a
+major transportation expansion that aimed to improve accessibility and
+connectivity between Washington, D.C., and the surrounding regions,
+particularly in Northern Virginia. Transportation improvements such as
+these can have significant effects on local housing markets, including
+rental prices, as they increase convenience and reduce commuting times
+for residents. Proximity to public transit is a desirable factor for
+many renters, often leading to rental price increases in areas adjacent
+to new transit lines (Peng et al., 2023).
+
+This research seeks to analyze the rental price effects following the
+expansion of the Silver Line in 2022, specifically focusing on how rents
+have changed for each zip code in Arlington,  Fairfax,  Loudoun
+counties. Analyzing rental price trends along the Silver Line will
+reveal how transit-oriented development (TOD) impacts housing
+affordability. This study will provide valuable insights for urban
+planners and policymakers on managing housing costs to ensure
+affordability in these neighborhoods. This analysis will provide
+valuable insights into how new infrastructure projects can influence
+housing affordability in rapidly growing metropolitan areas,
+contributing to urban planning and housing policy discussions.
+
+## Literature Review: 
+
+There is a variety of literature about the impact that different types
+of transit have on either rent prices or house prices. Peng et. al
+(2024) used difference-in-difference modeling to find the change in
+rental prices after the announcement of the Purple Line light rail
+construction in Maryland. The two or more bedroom units saw rent
+increases, however, there is no effect on the one bedroom units due to
+the increasing supply and high turnover (Peng et. al., 2024). Peng and
+Knaap (2023) also showed that home values increase when houses are
+closer to the planned Purple Line construction. At the same time, the
+home values will not increase when there is an existing metro station
+near the future light rail station (Peng and Knaap, 2023). Although
+these studies are noteworthy, the existing literature is not aligned
+with our area of interest. Our study will only focus on how the opening
+of the Silver Line extension in Northern Virginia will impact rental
+prices. 
 
 Step 1. Install necessary packages.
 
@@ -15,11 +58,17 @@ Step 2. Declare that you will use these packages in this session.
 library("tidyverse")
 ```
 
+    Warning: package 'tidyverse' was built under R version 4.3.3
+
+    Warning: package 'ggplot2' was built under R version 4.3.3
+
+    Warning: package 'dplyr' was built under R version 4.3.3
+
     ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ✔ dplyr     1.1.4     ✔ readr     2.1.5
-    ✔ forcats   1.0.0     ✔ stringr   1.5.1
+    ✔ dplyr     1.1.4     ✔ readr     2.1.4
+    ✔ forcats   1.0.0     ✔ stringr   1.5.0
     ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-    ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+    ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
     ✔ purrr     1.0.2     
     ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ✖ dplyr::filter() masks stats::filter()
@@ -29,6 +78,8 @@ library("tidyverse")
 ``` r
 library("kableExtra")
 ```
+
+    Warning: package 'kableExtra' was built under R version 4.3.3
 
 
     Attaching package: 'kableExtra'
@@ -87,7 +138,14 @@ names(df2)
 
 ## Question 3: Which column represents the treatment variable of interest?
 
-Answer: open2022
+Answer: open2022 and post
+
+Treatment Group: Rental prices after the silver line expansion
+opening(Nov 2022) within 1.5 miles of the silver line expansion
+
+Control Group: Rental prices in Fairfax and Loudoun county that either
+are farther than 1.5 miles from the silver line expansion, or were
+listed before the silver line expansion opening
 
 ## Question 4: Which column represents the outcome variable of interest?
 
@@ -140,16 +198,29 @@ Answer: 2075.458
 
 ## Question 6: What is predicted value of the outcome variable when treatment=1?
 
-Answer: 2075.458 + 426.789 = undefined
+Answer: 2075.458 + 426.789 = 2503.247
 
 ## Question 7: What is the equation that describes the linear regression above? Please include an explanation of the variables and subscripts.
 
-Answer: $$ZORI = \beta_0 + \beta_1open2022:post + \epsilon$$
+Answer:
+$$ZORI_{i, t} = \beta_0 + \beta_1 open2022_i\times post_t + \epsilon_{i,t}$$  
+Where i is zip code and t is month
 
-## Question 8: What fixed effects can be included in the regression? What does each fixed effects control for? Please include a new equation that incorporates the fixed effects.
+$open2022$ represents zip codes that are within 1.5 miles of stations
+that open in 2022.
+
+$post$ represents opening status of the Silver Line expansion after
+November 2022 and after.
+
+$open2022 \times post$ represents zip codes that are within 1.5 miles of
+stations in 2022 after its opening date.
+
+Question 8: What fixed effects can be included in the regression? What
+does each fixed effects control for? Please include a new equation that
+incorporates the fixed effects.
 
 Answer:
-$$ZORI_{zm} = \beta_1 open2022\times post + \beta_2 month + \beta_3 year + \beta_4 open2014 + \beta_5 openother + \beta_6 county + \beta_7 city + \epsilon_{zm}$$
+$$ZORI_{i,t} = \beta_1 open2022_i \times post_t + \beta_2 open2014 + \beta_3 openother + \zeta_{month} + \theta{year}  + \lambda_{city} + \epsilon_{i,t}$$
 
 Where $z$ represents the zip code and $m$ represents the current month
 
@@ -159,107 +230,92 @@ $$ZORI = \beta_0 + \beta_1 open2022:post+ \beta_2 city + \beta_3 zip\_code + \be
 ## Question 9: What is the impact of the treatment effect once fixed effects are included?
 
 ``` r
-model2 <- lm(ZORI ~ open2022 + post + open2022:post + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df)
-model3 <- lm(ZORI ~ post*open2022*dist + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df)
-# summary(model2)
+library("fixest")
+
+model2 <- feols(ZORI ~ open2022 + post + open2022:post + open2014 +
+                  openother | month + year + City, data=df2)
+```
+
+    The variable 'openother' has been removed because of collinearity (see $collin.var).
+
+``` r
+model3 <- feols(ZORI ~ open2022 + post + open2022:post | 
+               Date + ZIPCODE, data=df2)
+```
+
+    The variable 'post' has been removed because of collinearity (see $collin.var).
+
+``` r
+model4 <- feols(ZORI ~ open2022 + post + open2022:post + open2014 +
+               openother | Date + City, data=df2)
+```
+
+    The variables 'post' and 'openother' have been removed because of collinearity (see $collin.var).
+
+``` r
+summary(model2)
+```
+
+    OLS estimation, Dep. Var.: ZORI
+    Observations: 5,706 
+    Fixed-effects: month: 12,  year: 10,  City: 18
+    Standard-errors: Clustered (month) 
+                    Estimate Std. Error   t value   Pr(>|t|)    
+    open2022      117.311445    2.16274 54.241924 1.0307e-14 ***
+    post           37.839691   15.40471  2.456372 3.1883e-02 *  
+    open2014      114.492922    1.81656 63.027461 1.9867e-15 ***
+    open2022:post   0.552214    7.23099  0.076368 9.4050e-01    
+    ... 1 variable was removed because of collinearity (openother)
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    RMSE: 114.3     Adj. R2: 0.884701
+                  Within R2: 0.053976
+
+``` r
 summary(model3)
 ```
 
-
-    Call:
-    lm(formula = ZORI ~ post * open2022 * dist + open2014 + openother + 
-        as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), 
-        data = df)
-
-    Residuals:
-        Min      1Q  Median      3Q     Max 
-    -539.70  -56.91    0.71   63.72  433.71 
-
-    Coefficients: (2 not defined because of singularities)
-                                          Estimate Std. Error t value Pr(>|t|)    
-    (Intercept)                          2.532e+03  2.744e+01  92.280  < 2e-16 ***
-    post                                 2.960e+01  1.241e+01   2.385 0.017131 *  
-    open2022                             3.736e+02  1.816e+01  20.572  < 2e-16 ***
-    dist                                -2.763e-02  1.399e-03 -19.746  < 2e-16 ***
-    open2014                             6.539e+01  6.440e+00  10.153  < 2e-16 ***
-    openother                                   NA         NA      NA       NA    
-    as.factor(month)2                    9.382e+00  6.790e+00   1.382 0.167137    
-    as.factor(month)3                    2.231e+01  6.774e+00   3.294 0.000993 ***
-    as.factor(month)4                    3.973e+01  6.764e+00   5.874 4.49e-09 ***
-    as.factor(month)5                    5.713e+01  6.768e+00   8.442  < 2e-16 ***
-    as.factor(month)6                    7.454e+01  6.764e+00  11.020  < 2e-16 ***
-    as.factor(month)7                    8.655e+01  6.764e+00  12.796  < 2e-16 ***
-    as.factor(month)8                    9.139e+01  6.764e+00  13.510  < 2e-16 ***
-    as.factor(month)9                    8.594e+01  7.033e+00  12.218  < 2e-16 ***
-    as.factor(month)10                   8.348e+01  7.008e+00  11.911  < 2e-16 ***
-    as.factor(month)11                   7.485e+01  7.181e+00  10.424  < 2e-16 ***
-    as.factor(month)12                   7.899e+01  7.158e+00  11.036  < 2e-16 ***
-    as.factor(year)2016                  2.545e+01  8.422e+00   3.022 0.002521 ** 
-    as.factor(year)2017                  5.757e+01  8.130e+00   7.082 1.60e-12 ***
-    as.factor(year)2018                  1.078e+02  7.989e+00  13.488  < 2e-16 ***
-    as.factor(year)2019                  1.692e+02  7.916e+00  21.374  < 2e-16 ***
-    as.factor(year)2020                  1.791e+02  7.875e+00  22.741  < 2e-16 ***
-    as.factor(year)2021                  2.570e+02  7.821e+00  32.863  < 2e-16 ***
-    as.factor(year)2022                  4.623e+02  8.039e+00  57.516  < 2e-16 ***
-    as.factor(year)2023                  5.426e+02  1.377e+01  39.400  < 2e-16 ***
-    as.factor(year)2024                  6.905e+02  1.430e+01  48.303  < 2e-16 ***
-    as.factor(City)Annandale            -5.760e+02  1.820e+01 -31.654  < 2e-16 ***
-    as.factor(City)Ashburn              -2.537e+02  2.829e+01  -8.967  < 2e-16 ***
-    as.factor(City)Centreville          -4.588e+02  1.304e+01 -35.188  < 2e-16 ***
-    as.factor(City)Fairfax              -5.809e+02  1.454e+01 -39.943  < 2e-16 ***
-    as.factor(City)Falls Church         -6.796e+02  2.308e+01 -29.439  < 2e-16 ***
-    as.factor(City)Herndon              -5.902e+02  2.718e+01 -21.711  < 2e-16 ***
-    as.factor(City)Huntington           -7.303e+02  1.314e+01 -55.599  < 2e-16 ***
-    as.factor(City)Hybla Valley         -5.680e+02  1.602e+01 -35.457  < 2e-16 ***
-    as.factor(City)Leesburg             -5.888e+02  1.574e+01 -37.403  < 2e-16 ***
-    as.factor(City)Lincolnia            -7.390e+02  2.004e+01 -36.876  < 2e-16 ***
-    as.factor(City)Lorton                9.721e+00  2.256e+01   0.431 0.666548    
-    as.factor(City)McLean               -5.916e+02  2.140e+01 -27.646  < 2e-16 ***
-    as.factor(City)Reston               -8.350e+02  2.337e+01 -35.730  < 2e-16 ***
-    as.factor(City)Rose Hill            -3.371e+02  1.226e+01 -27.492  < 2e-16 ***
-    as.factor(City)Springfield           2.725e+02  1.844e+01  14.781  < 2e-16 ***
-    as.factor(City)Sterling             -8.034e+02  2.630e+01 -30.547  < 2e-16 ***
-    as.factor(City)Vienna               -1.729e+02  2.406e+01  -7.188 7.43e-13 ***
-    as.factor(CountyName)Loudoun County         NA         NA      NA       NA    
-    post:open2022                       -7.854e+01  1.982e+01  -3.962 7.51e-05 ***
-    post:dist                            5.772e-04  5.578e-04   1.035 0.300790    
-    open2022:dist                       -1.392e-01  6.572e-03 -21.177  < 2e-16 ***
-    post:open2022:dist                   2.804e-02  5.337e-03   5.254 1.54e-07 ***
+    OLS estimation, Dep. Var.: ZORI
+    Observations: 5,706 
+    Fixed-effects: Date: 116,  ZIPCODE: 29
+    Standard-errors: Clustered (Date) 
+                  Estimate Std. Error  t value Pr(>|t|) 
+    open2022       1.61267    1.12130  1.43821  0.15309 
+    open2022:post -8.46650    5.53134 -1.53064  0.12860 
+    ... 1 variable was removed because of collinearity (post)
     ---
     Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    RMSE: 50.5     Adj. R2: 0.977108
+                 Within R2: 9.65e-4 
 
-    Residual standard error: 105.3 on 5660 degrees of freedom
-    Multiple R-squared:  0.9036,    Adjusted R-squared:  0.9029 
-    F-statistic:  1179 on 45 and 5660 DF,  p-value: < 2.2e-16
+``` r
+summary(model4)
+```
 
-model2 \<- lm(ZORI ~ silver + as.factor(City) + as.factor(ZIPCODE) +
-as.factor(month) + as.factor(year), data=df2) summary(model2) \`\`\`
+    OLS estimation, Dep. Var.: ZORI
+    Observations: 5,706 
+    Fixed-effects: Date: 116,  City: 18
+    Standard-errors: Clustered (Date) 
+                   Estimate Std. Error   t value  Pr(>|t|)    
+    open2022      116.23640    5.35214 21.717731 < 2.2e-16 ***
+    open2014      114.06999    4.73417 24.095055 < 2.2e-16 ***
+    open2022:post   1.59282    5.40627  0.294624   0.76881    
+    ... 2 variables were removed because of collinearity (post and openother)
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    RMSE: 110.2     Adj. R2: 0.890998
+                  Within R2: 0.055781
 
-## 
+Possible explanations why rents do not change:
 
-Answer: When fixed effects are included, the silver line’s effect jumps
-from 188 to 630.
+- High turnover of renters
 
-# Questions for Week 5
+- Higher supply
 
-## Question 10: In a difference-in-differences (DiD) model, what is the treatment GROUP?
+- More people buy houses rather than rent
 
-Answer: The zip codes containing the new section of the silver line
-
-## Question 11: In a DiD model, what are the untreated groups?
-
-Answer: The zip codes in Virginia not containing the new silver line
-expansion
-
-## Question 12: What is the DiD regression equation that will answer your research question?
-
-Answer:
-$$ZORI = \beta_1 dist + \beta_2 silver + \beta_3 post + \beta_4 (silver \times post) + \gamma_{city} + \theta_{zip\_code} + \zeta_{month} + \iota_{year} + \lambda_{City} + \epsilon$$
-
-## Question 13: What are the results of the DiD regression?
-
-Answer: The opening of the expansion of the silver line increased house
-rental prices by an amount that isn’t statistically significant(\$2.06).
+- Cost of rent is already high because of other businesses near the
+  metro station
 
 Step 9: Change the document format to gfm
 
@@ -282,3 +338,13 @@ The house rental prices may not have adjusted immediately as the
 expansion of the silver line opened. As such, including the time since
 the expansion opened may help us better understand the silver line’s
 effects on rental prices.
+
+## References:
+
+Peng, Q., & Knaap, G. (2023). When and Where Do Home Values Increase in
+Response to Planned Light Rail Construction?. *Journal of Planning
+Education and Research*, 0739456X221133022.
+
+Peng, Q., Knaap, G. J., & Finio, N. (2024). Do Multifamily unit Rents
+Increase in Response to Light Rail in the Pre-service Period?.
+*International Regional Science Review*, 47(5-6), 566-590. 
