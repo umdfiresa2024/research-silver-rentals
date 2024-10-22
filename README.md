@@ -161,6 +161,10 @@ ggplot(df3, aes(x=ZORI)) +
   facet_wrap(~open2022)
 ```
 
+    `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](README_files/figure-commonmark/unnamed-chunk-6-1.png)
+
 Step 8: Fit a regression model $y=\beta_0 + \beta_1 x + \epsilon$ where
 $y$ is the outcome variable and $x$ is the treatment variable. Use the
 **summary** function to display the results.

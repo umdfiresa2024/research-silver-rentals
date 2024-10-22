@@ -77,7 +77,7 @@ Answer: ZORI
 Step 7: Create a boxplot to visualize the distribution of the outcome variable under treatment and no treatment.
 
 ```{r}
-#| eval: false
+
 df3 <- filter(df2, year=="2022")
 ggplot(df3, aes(x=ZORI)) +
   geom_histogram() +
