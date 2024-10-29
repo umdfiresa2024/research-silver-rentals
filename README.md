@@ -202,7 +202,7 @@ Answer: 2075.458
 
 ## Question 6: What is predicted value of the outcome variable when treatment=1?
 
-Answer: 2075.458 + 426.789 = 2503.247
+Answer: 2075.458 + 26.430 = 2101.888
 
 ## Question 7: What is the equation that describes the linear regression above? Please include an explanation of the variables and subscripts.
 
