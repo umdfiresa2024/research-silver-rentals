@@ -1,8 +1,20 @@
 ---
-title: "How did the expansion of the Silver Line of the Washington Metro System impact adjacent rental prices?"
+title: "Silver Rentals"
 format: gfm
 editor: visual
 ---
+
+## How did the expansion of the Silver Line of the Washington Metro System impact residential rental prices?
+
+## Introduction:
+
+The opening of the Silver Line of the Washington Metro System was a major transportation expansion that aimed to improve accessibility and connectivity between Washington, D.C., and the surrounding regions, particularly in Northern Virginia. Transportation improvements such as these can have significant effects on local housing markets, including rental prices, as they increase convenience and reduce commuting times for residents. Proximity to public transit is a desirable factor for many renters, often leading to rental price increases in areas adjacent to new transit lines (Peng et al., 2023).
+
+This research seeks to analyze the rental price effects following the expansion of the Silver Line in 2022, specifically focusing on how rents have changed for each zip code in Arlington,  Fairfax,  Loudoun counties. Analyzing rental price trends along the Silver Line will reveal how transit-oriented development (TOD) impacts housing affordability. This study will provide valuable insights for urban planners and policymakers on managing housing costs to ensure affordability in these neighborhoods. This analysis will provide valuable insights into how new infrastructure projects can influence housing affordability in rapidly growing metropolitan areas, contributing to urban planning and housing policy discussions.
+
+## Literature Review:
+
+There is a variety of literature about the impact that different types of transit have on either rent prices or house prices. Peng et. al (2024) used difference-in-difference modeling to find the change in rental prices after the announcement of the Purple Line light rail construction in Maryland. The two or more bedroom units saw rent increases, however, there is no effect on the one bedroom units due to the increasing supply and high turnover (Peng et. al., 2024). Peng and Knaap (2023) also showed that home values increase when houses are closer to the planned Purple Line construction. At the same time, the home values will not increase when there is an existing metro station near the future light rail station (Peng and Knaap, 2023). Although these studies are noteworthy, the existing literature is not aligned with our area of interest. Our study will only focus on how the opening of the Silver Line extension in Northern Virginia will impact rental prices. 
 
 Step 1. Install necessary packages.
 
@@ -54,7 +66,11 @@ names(df2)
 
 ## Question 3: Which column represents the treatment variable of interest?
 
-Answer: open2022
+Answer: open2022 and post
+
+Treatment Group: Rental prices after the silver line expansion opening(Nov 2022) within 1.5 miles of the silver line expansion
+
+Control Group: Rental prices in Fairfax and Loudoun county that either are farther than 1.5 miles from the silver line expansion, or were listed before the silver line expansion opening
 
 ## Question 4: Which column represents the outcome variable of interest?
 
@@ -63,7 +79,7 @@ Answer: ZORI
 Step 7: Create a boxplot to visualize the distribution of the outcome variable under treatment and no treatment.
 
 ```{r}
-#| eval: false
+
 df3 <- filter(df2, year=="2022")
 ggplot(df3, aes(x=ZORI)) +
   geom_histogram() +
@@ -85,15 +101,22 @@ Answer: 2075.458
 
 ## Question 6: What is predicted value of the outcome variable when treatment=1?
 
-Answer: 2075.458 + 426.789 = undefined
+Answer: 2075.458 + 426.789 = 2503.247
 
 ## Question 7: What is the equation that describes the linear regression above? Please include an explanation of the variables and subscripts.
 
-Answer: $$ZORI = \beta_0 + \beta_1open2022:post + \epsilon$$
+Answer: $$ZORI_{i, t} = \beta_0 + \beta_1 open2022_i\times post_t + \epsilon_{i,t}$$\
+Where i is zip code and t is month
 
-## Question 8: What fixed effects can be included in the regression? What does each fixed effects control for? Please include a new equation that incorporates the fixed effects.
+$open2022$ represents zip codes that are within 1.5 miles of stations that open in 2022.
 
-Answer: $$ZORI_{zm} = \beta_1 open2022\times post + \beta_2 month + \beta_3 year + \beta_4 open2014 + \beta_5 openother + \beta_6 county + \beta_7 city + \epsilon_{zm}$$
+$post$ represents opening status of the Silver Line expansion after November 2022 and after.
+
+$open2022 \times post$ represents zip codes that are within 1.5 miles of stations in 2022 after its opening date.
+
+Question 8: What fixed effects can be included in the regression? What does each fixed effects control for? Please include a new equation that incorporates the fixed effects.
+
+Answer: $$ZORI_{i,t} = \beta_1 open2022_i \times post_t + \beta_2 open2014 + \beta_3 openother + \zeta_{month} + \theta{year}  + \lambda_{city} + \epsilon_{i,t}$$
 
 Where $z$ represents the zip code and $m$ represents the current month
 
@@ -146,21 +169,25 @@ ggplot(df6, aes(x = date, y = avgPrice, color=factor(open2022))) +
 
 # Questions for Week 5
 
-## Question 10: In a difference-in-differences (DiD) model, what is the treatment GROUP?
+library("fixest")
 
-Answer: The zip codes containing the new section of the silver line
+model2 \<- feols(ZORI \~ open2022 + post + open2022:post + open2014 + openother \| month + year + City, data=df2)
 
-## Question 11: In a DiD model, what are the untreated groups?
+model3 \<- feols(ZORI \~ open2022 + post + open2022:post \| Date + ZIPCODE, data=df2)
 
-Answer: The zip codes in Virginia not containing the new silver line expansion
+model4 \<- feols(ZORI \~ open2022 + post + open2022:post + open2014 + openother \| Date + City, data=df2)
 
-## Question 12: What is the DiD regression equation that will answer your research question?
+summary(model2) summary(model3) summary(model4) \`\`\`
 
-Answer: $$ZORI = \beta_1 dist + \beta_2 silver + \beta_3 post + \beta_4 (silver \times post) + \gamma_{city} + \theta_{zip\_code} + \zeta_{month} + \iota_{year} + \lambda_{City} + \epsilon$$
+Possible explanations why rents do not change:
 
-## Question 13: What are the results of the DiD regression?
+-   High turnover of renters
 
-Answer: The opening of the expansion of the silver line increased house rental prices by an amount that isn't statistically significant(\$2.06).
+-   Higher supply
+
+-   More people buy houses rather than rent
+
+-   Cost of rent is already high because of other businesses near the metro station
 
 Step 9: Change the document format to gfm
 
@@ -175,3 +202,9 @@ Step 13: If your team has a complete dataframe that includes both the treated an
 ## Future Plans:
 
 The house rental prices may not have adjusted immediately as the expansion of the silver line opened. As such, including the time since the expansion opened may help us better understand the silver line's effects on rental prices.
+
+## References:
+
+Peng, Q., & Knaap, G. (2023). When and Where Do Home Values Increase in Response to Planned Light Rail Construction?. *Journal of Planning Education and Research*, 0739456X221133022.
+
+Peng, Q., Knaap, G. J., & Finio, N. (2024). Do Multifamily unit Rents Increase in Response to Light Rail in the Pre-service Period?. *International Regional Science Review*, 47(5-6), 566-590.

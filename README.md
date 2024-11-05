@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 editor_options: 
   markdown: 
@@ -7,6 +8,54 @@ editor_options:
 # How did the expansion of the Silver Line of the Washington Metro
 
 System impact adjacent rental prices?
+=======
+# Silver Rentals
+
+
+## How did the expansion of the Silver Line of the Washington Metro System impact residential rental prices?
+
+## Introduction: 
+
+The opening of the Silver Line of the Washington Metro System was a
+major transportation expansion that aimed to improve accessibility and
+connectivity between Washington, D.C., and the surrounding regions,
+particularly in Northern Virginia. Transportation improvements such as
+these can have significant effects on local housing markets, including
+rental prices, as they increase convenience and reduce commuting times
+for residents. Proximity to public transit is a desirable factor for
+many renters, often leading to rental price increases in areas adjacent
+to new transit lines (Peng et al., 2023).
+
+This research seeks to analyze the rental price effects following the
+expansion of the Silver Line in 2022, specifically focusing on how rents
+have changed for each zip code in Arlington,  Fairfax,  Loudoun
+counties. Analyzing rental price trends along the Silver Line will
+reveal how transit-oriented development (TOD) impacts housing
+affordability. This study will provide valuable insights for urban
+planners and policymakers on managing housing costs to ensure
+affordability in these neighborhoods. This analysis will provide
+valuable insights into how new infrastructure projects can influence
+housing affordability in rapidly growing metropolitan areas,
+contributing to urban planning and housing policy discussions.
+
+## Literature Review: 
+
+There is a variety of literature about the impact that different types
+of transit have on either rent prices or house prices. Peng et. al
+(2024) used difference-in-difference modeling to find the change in
+rental prices after the announcement of the Purple Line light rail
+construction in Maryland. The two or more bedroom units saw rent
+increases, however, there is no effect on the one bedroom units due to
+the increasing supply and high turnover (Peng et. al., 2024). Peng and
+Knaap (2023) also showed that home values increase when houses are
+closer to the planned Purple Line construction. At the same time, the
+home values will not increase when there is an existing metro station
+near the future light rail station (Peng and Knaap, 2023). Although
+these studies are noteworthy, the existing literature is not aligned
+with our area of interest. Our study will only focus on how the opening
+of the Silver Line extension in Northern Virginia will impact rental
+prices. 
+>>>>>>> 9ddd2b451cfb1bc970d27a89149cc42daa4e8b92
 
 Step 1. Install necessary packages.
 
@@ -21,6 +70,7 @@ Step 2. Declare that you will use these packages in this session.
 library("tidyverse")
 ```
 
+<<<<<<< HEAD
 ```         
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
@@ -33,13 +83,36 @@ library("tidyverse")
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 ```
+=======
+    Warning: package 'tidyverse' was built under R version 4.3.3
+
+    Warning: package 'ggplot2' was built under R version 4.3.3
+
+    Warning: package 'dplyr' was built under R version 4.3.3
+
+    ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ✔ dplyr     1.1.4     ✔ readr     2.1.4
+    ✔ forcats   1.0.0     ✔ stringr   1.5.0
+    ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+    ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+    ✔ purrr     1.0.2     
+    ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ✖ dplyr::filter() masks stats::filter()
+    ✖ dplyr::lag()    masks stats::lag()
+    ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+>>>>>>> 9ddd2b451cfb1bc970d27a89149cc42daa4e8b92
 
 ``` r
 library("kableExtra")
 ```
 
+<<<<<<< HEAD
 ```         
 Attaching package: 'kableExtra'
+=======
+    Warning: package 'kableExtra' was built under R version 4.3.3
+
+>>>>>>> 9ddd2b451cfb1bc970d27a89149cc42daa4e8b92
 
 The following object is masked from 'package:dplyr':
 
@@ -98,7 +171,14 @@ names(df2)
 
 ## Question 3: Which column represents the treatment variable of interest?
 
-Answer: open2022
+Answer: open2022 and post
+
+Treatment Group: Rental prices after the silver line expansion
+opening(Nov 2022) within 1.5 miles of the silver line expansion
+
+Control Group: Rental prices in Fairfax and Loudoun county that either
+are farther than 1.5 miles from the silver line expansion, or were
+listed before the silver line expansion opening
 
 ## Question 4: Which column represents the outcome variable of interest?
 
@@ -113,6 +193,10 @@ ggplot(df3, aes(x=ZORI)) +
   geom_histogram() +
   facet_wrap(~open2022)
 ```
+
+    `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](README_files/figure-commonmark/unnamed-chunk-6-1.png)
 
 Step 8: Fit a regression model $y=\beta_0 + \beta_1 x + \epsilon$ where
 $y$ is the outcome variable and $x$ is the treatment variable. Use the
@@ -152,16 +236,29 @@ Answer: 2075.458
 
 ## Question 6: What is predicted value of the outcome variable when treatment=1?
 
-Answer: 2075.458 + 426.789 = undefined
+Answer: 2075.458 + 26.430 = 2101.888
 
 ## Question 7: What is the equation that describes the linear regression above? Please include an explanation of the variables and subscripts.
 
-Answer: $$ZORI = \beta_0 + \beta_1open2022:post + \epsilon$$
+Answer:
+$$ZORI_{i, t} = \beta_0 + \beta_1 open2022_i\times post_t + \epsilon_{i,t}$$  
+Where i is zip code and t is month
 
-## Question 8: What fixed effects can be included in the regression? What does each fixed effects control for? Please include a new equation that incorporates the fixed effects.
+$open2022$ represents zip codes that are within 1.5 miles of stations
+that open in 2022.
+
+$post$ represents opening status of the Silver Line expansion after
+November 2022 and after.
+
+$open2022 \times post$ represents zip codes that are within 1.5 miles of
+stations in 2022 after its opening date.
+
+Question 8: What fixed effects can be included in the regression? What
+does each fixed effects control for? Please include a new equation that
+incorporates the fixed effects.
 
 Answer:
-$$ZORI_{zm} = \beta_1 open2022\times post + \beta_2 month + \beta_3 year + \beta_4 open2014 + \beta_5 openother + \beta_6 county + \beta_7 city + \epsilon_{zm}$$
+$$ZORI_{i,t} = \beta_1 open2022_i \times post_t + \beta_2 open2014 + \beta_3 openother + \zeta_{month} + \theta{year}  + \lambda_{city} + \epsilon_{i,t}$$
 
 Where $z$ represents the zip code and $m$ represents the current month
 
@@ -171,6 +268,7 @@ $$ZORI = \beta_0 + \beta_1 open2022:post+ \beta_2 city + \beta_3 zip\_code + \be
 ## Question 9: What is the impact of the treatment effect once fixed effects are included?
 
 ``` r
+<<<<<<< HEAD
 model2 <- lm(ZORI ~ open2022 + post + open2022:post + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df)
 
 df5 <- df %>% mutate(time=(round(interval(as.Date("2022-11-30"), date)/months(1)))) %>%
@@ -262,13 +360,51 @@ F-statistic:  1003 on 50 and 5655 DF,  p-value: < 2.2e-16
 
 model2 \<- lm(ZORI \~ silver + as.factor(City) + as.factor(ZIPCODE) +
 as.factor(month) + as.factor(year), data=df2) summary(model2) \`\`\`
+=======
+library("fixest")
 
-## 
+model2 <- feols(ZORI ~ open2022 + post + open2022:post + open2014 +
+                  openother | month + year + City, data=df2)
+```
 
-Answer: When fixed effects are included, the silver line’s effect jumps
-from 188 to 630.
+    The variable 'openother' has been removed because of collinearity (see $collin.var).
 
 ``` r
+model3 <- feols(ZORI ~ open2022 + post + open2022:post | 
+               Date + ZIPCODE, data=df2)
+```
+
+    The variable 'post' has been removed because of collinearity (see $collin.var).
+
+``` r
+model4 <- feols(ZORI ~ open2022 + post + open2022:post + open2014 +
+               openother | Date + City, data=df2)
+```
+
+    The variables 'post' and 'openother' have been removed because of collinearity (see $collin.var).
+>>>>>>> 9ddd2b451cfb1bc970d27a89149cc42daa4e8b92
+
+``` r
+summary(model2)
+```
+
+    OLS estimation, Dep. Var.: ZORI
+    Observations: 5,706 
+    Fixed-effects: month: 12,  year: 10,  City: 18
+    Standard-errors: Clustered (month) 
+                    Estimate Std. Error   t value   Pr(>|t|)    
+    open2022      117.311445    2.16274 54.241924 1.0307e-14 ***
+    post           37.839691   15.40471  2.456372 3.1883e-02 *  
+    open2014      114.492922    1.81656 63.027461 1.9867e-15 ***
+    open2022:post   0.552214    7.23099  0.076368 9.4050e-01    
+    ... 1 variable was removed because of collinearity (openother)
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    RMSE: 114.3     Adj. R2: 0.884701
+                  Within R2: 0.053976
+
+``` r
+<<<<<<< HEAD
 df6 <- df %>%
   group_by(date, open2022) %>%
   summarise(avgPrice = mean(ZORI)) %>%
@@ -298,25 +434,52 @@ ggplot(df6, aes(x = date, y = avgPrice, color=factor(open2022))) +
 ![](README_files/figure-commonmark/unnamed-chunk-9-1.png)
 
 # Questions for Week 5
+=======
+summary(model3)
+```
+>>>>>>> 9ddd2b451cfb1bc970d27a89149cc42daa4e8b92
 
-## Question 10: In a difference-in-differences (DiD) model, what is the treatment GROUP?
+    OLS estimation, Dep. Var.: ZORI
+    Observations: 5,706 
+    Fixed-effects: Date: 116,  ZIPCODE: 29
+    Standard-errors: Clustered (Date) 
+                  Estimate Std. Error  t value Pr(>|t|) 
+    open2022       1.61267    1.12130  1.43821  0.15309 
+    open2022:post -8.46650    5.53134 -1.53064  0.12860 
+    ... 1 variable was removed because of collinearity (post)
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    RMSE: 50.5     Adj. R2: 0.977108
+                 Within R2: 9.65e-4 
 
-Answer: The zip codes containing the new section of the silver line
+``` r
+summary(model4)
+```
 
-## Question 11: In a DiD model, what are the untreated groups?
+    OLS estimation, Dep. Var.: ZORI
+    Observations: 5,706 
+    Fixed-effects: Date: 116,  City: 18
+    Standard-errors: Clustered (Date) 
+                   Estimate Std. Error   t value  Pr(>|t|)    
+    open2022      116.23640    5.35214 21.717731 < 2.2e-16 ***
+    open2014      114.06999    4.73417 24.095055 < 2.2e-16 ***
+    open2022:post   1.59282    5.40627  0.294624   0.76881    
+    ... 2 variables were removed because of collinearity (post and openother)
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    RMSE: 110.2     Adj. R2: 0.890998
+                  Within R2: 0.055781
 
-Answer: The zip codes in Virginia not containing the new silver line
-expansion
+Possible explanations why rents do not change:
 
-## Question 12: What is the DiD regression equation that will answer your research question?
+- High turnover of renters
 
-Answer:
-$$ZORI = \beta_1 dist + \beta_2 silver + \beta_3 post + \beta_4 (silver \times post) + \gamma_{city} + \theta_{zip\_code} + \zeta_{month} + \iota_{year} + \lambda_{City} + \epsilon$$
+- Higher supply
 
-## Question 13: What are the results of the DiD regression?
+- More people buy houses rather than rent
 
-Answer: The opening of the expansion of the silver line increased house
-rental prices by an amount that isn’t statistically significant(\$2.06).
+- Cost of rent is already high because of other businesses near the
+  metro station
 
 Step 9: Change the document format to gfm
 
@@ -339,3 +502,13 @@ The house rental prices may not have adjusted immediately as the
 expansion of the silver line opened. As such, including the time since
 the expansion opened may help us better understand the silver line’s
 effects on rental prices.
+
+## References:
+
+Peng, Q., & Knaap, G. (2023). When and Where Do Home Values Increase in
+Response to Planned Light Rail Construction?. *Journal of Planning
+Education and Research*, 0739456X221133022.
+
+Peng, Q., Knaap, G. J., & Finio, N. (2024). Do Multifamily unit Rents
+Increase in Response to Light Rail in the Pre-service Period?.
+*International Regional Science Review*, 47(5-6), 566-590. 
