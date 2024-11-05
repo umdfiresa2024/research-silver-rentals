@@ -9,6 +9,7 @@ Step 1. Install necessary packages.
 ```{r}
 #install.packages("tidyverse")
 #install.packages("kableExtra")
+
 ```
 
 Step 2. Declare that you will use these packages in this session.
@@ -16,6 +17,7 @@ Step 2. Declare that you will use these packages in this session.
 ```{r}
 library("tidyverse")
 library("kableExtra")
+
 ```
 
 Step 3. Upload the dataframe that you have created in Spring 2024 into the repository.
@@ -101,9 +103,19 @@ Answer: $$ZORI = \beta_0 + \beta_1 open2022:post+ \beta_2 city + \beta_3 zip\_co
 
 ```{r}
 model2 <- lm(ZORI ~ open2022 + post + open2022:post + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df)
-model3 <- lm(ZORI ~ post*open2022*dist + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df)
-# summary(model2)
-summary(model3)
+
+df5 <- df %>% mutate(time=(round(interval(as.Date("2022-11-30"), date)/months(1)))) %>%
+    mutate (post_12m_before = (time >= -12 & time < -6)) %>% 
+    mutate (post_6m_before = (time >= -6 & time < 0)) %>% 
+    mutate(post_6m_after = (time <= 6 & time > 0)) %>% 
+    mutate(post_12m_after = (time <= 12 & time > 6))
+
+model3 <- lm(ZORI ~ dist + post + dist:post + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df5)
+
+model4 <- lm(ZORI ~ open2022*post + open2022*post_12m_before + open2022*post_6m_before + open2022*post_6m_after  + open2022*post_12m_after + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df5)
+model5 <- lm(ZORI ~ dist*post + dist*post_12m_before + dist*post_6m_before + dist*post_6m_after  + dist*post_12m_after + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df5)
+#summary(model2)
+summary(model5)
 ```
 
 model2 \<- lm(ZORI \~ silver + as.factor(City) + as.factor(ZIPCODE) + as.factor(month) + as.factor(year), data=df2) summary(model2) \`\`\`
@@ -111,6 +123,26 @@ model2 \<- lm(ZORI \~ silver + as.factor(City) + as.factor(ZIPCODE) + as.factor(
 ## 
 
 Answer: When fixed effects are included, the silver line's effect jumps from 188 to 630.
+
+```{r}
+df6 <- df %>%
+  group_by(date, open2022) %>%
+  summarise(avgPrice = mean(ZORI)) %>%
+  mutate(date = as.Date(date)) %>%
+  mutate(open2022 = ifelse(open2022==1, "Yes", "No"))
+
+opening_date <- as.Date("2022-11-30")
+
+ggplot(df6, aes(x = date, y = avgPrice, color=factor(open2022))) +
+  geom_line() + 
+  geom_vline(xintercept = as.numeric(opening_date), linetype = "dashed", color = "black") + 
+  annotate("text", x = opening_date, y = max(df6$avgPrice), label = "Expansion Open Date", vjust = -0.5, color = "Black") +
+  scale_x_date(date_labels = "%Y-%m-%d", date_breaks = "2 years") +
+  labs(title = "ZORI Rental prices over time",
+       x = "Date", 
+       y = "Average Price",
+       color = "Station near 2022 expansion?")
+```
 
 # Questions for Week 5
 
