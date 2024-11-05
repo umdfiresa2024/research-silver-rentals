@@ -19,8 +19,8 @@ There is a variety of literature about the impact that different types of transi
 Step 1. Install necessary packages.
 
 ```{r}
-#install.packages("tidyverse")
-#install.packages("kableExtra")
+install.packages("tidyverse")
+install.packages("kableExtra")
 
 ```
 
@@ -165,6 +165,62 @@ ggplot(df6, aes(x = date, y = avgPrice, color=factor(open2022))) +
        x = "Date", 
        y = "Average Price",
        color = "Station near 2022 expansion?")
+```
+
+```{r}
+# Create a map of the treated and untreated group
+
+metro<-vect("Metro_Stations_Regional/Metro_Stations_Regional.shp")
+line<-vect("Metro_Lines_Regional/Metro_Lines_Regional.shp")
+
+metrodf<-as.data.frame(metro)
+
+treated<-c("Ashburn", "Loudoun Gateway", "Dulles International Airport", 
+       "Innovation Center", "Herndon", "Reston Town Center")
+untreated<-c("Vienna/Fairfax-GMU", "Dunn Loring-Merrifield", "West Falls Church",
+       "East Falls Church", "Ballston MU", "Virginia Square-GMU", "Clarendon",
+       "Court House", "Rosslyn", "Arlington Cemetery", "Pentagon", "Pentagon City",
+       "Crystal City", "Ronald Reagan Washington National Airport", "Potomac Yard",
+       "Braddock Road", "King St-Old Town", "Eisenhower Ave", "Huntington",
+       "Van Dorn Street", "Franconia-Springfield")
+
+silver_2022 <- buffer(subset(metro, metro$NAME %in% st2), width=2414)
+other_stations <- buffer(subset(metro, metro$NAME %in% st3), width=2414)
+
+png(filename="images/treated_untreated_map.png", width=800, height=600)
+
+plot(line)
+plot(silver_2022, col="red", add=TRUE)
+
+# Project zip codes in the treated stations buffer
+va2 <- vect("VA/VA_Zip_Codes.shp")
+va_project2 <- project(va2, crs(metro))
+va_project2 <- terra::makeValid(va_project2)
+va_2022 <- terra::intersect(va_project2, silver_2022)
+va_2022_df <- as.data.frame(va_2022) |>
+  select(ZIP_CODE) |>
+  rename(ZIPCODE = ZIP_CODE) |>
+  mutate(open = 2022)
+
+# Overlay zip codes for treated areas
+plot(va_2022, col="red", add=TRUE)
+
+# Project zip codes in the untreated stations buffer
+va3 <- vect("VA/VA_Zip_Codes.shp")
+va_project3 <- project(va3, crs(metro))
+va_project3 <- terra::makeValid(va_project3)
+other_zips <- terra::intersect(va_project3, other_stations)
+other_zips_df <- as.data.frame(other_zips) |>
+  select(ZIP_CODE) |>
+  rename(ZIPCODE = ZIP_CODE) |>
+  mutate(open = "other_stations")
+
+# Overlay zip codes for untreated areas
+plot(other_zips, col="gold", add=TRUE)
+
+legend("topright", legend=c("Treated", "Untreated"), fill=c("red", "gold"), border="black", xpd = TRUE)
+
+dev.off()
 ```
 
 # Questions for Week 5
