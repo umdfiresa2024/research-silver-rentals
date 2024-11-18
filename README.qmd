@@ -14,17 +14,18 @@ This research seeks to analyze the rental price effects following the expansion 
 
 ## Literature Review:
 
-There is a variety of literature about the impact that different types of transit have on either rent prices or house prices. Peng et. al (2024) used difference-in-difference modeling to find the change in rental prices after the announcement of the Purple Line light rail construction in Maryland. The two or more bedroom units saw rent increases, however, there is no effect on the one bedroom units due to the increasing supply and high turnover (Peng et. al., 2024). Peng and Knaap (2023) also showed that home values increase when houses are closer to the planned Purple Line construction. At the same time, the home values will not increase when there is an existing metro station near the future light rail station (Peng and Knaap, 2023). Although these studies are noteworthy, the existing literature is not aligned with our area of interest. Our study will only focus on how the opening of the Silver Line extension in Northern Virginia will impact rental prices. 
+There is a variety of literature about the impact that different types of transit have on either rent prices or house prices. Peng et. al (2024) used difference-in-difference modeling to find the change in rental prices after the announcement of the Purple Line light rail construction in Maryland. The two or more bedroom units saw rent increases, however, there is no effect on the one bedroom units due to the increasing supply and high turnover (Peng et. al., 2024). Peng and Knaap (2023) also showed that home values increase when houses are closer to the planned Purple Line construction. At the same time, the home values will not increase when there is an existing metro station near the future light rail station (Peng and Knaap, 2023). Although these studies are noteworthy, the existing literature is not aligned with our area of interest. Our study will only focus on how the opening of the Silver Line extension in Northern Virginia will impact rental prices.
 
 ```{r}
-#install.packages("tidyverse")
-#install.packages("kableExtra")
+# install.packages("tidyverse")
+# install.packages("kableExtra")
 
 ```
 
 ```{r}
 #| warnings: false
 #| message: false
+library("terra")
 library("tidyverse")
 library("kableExtra")
 
@@ -122,6 +123,55 @@ ggplot(df6, aes(x = date, y = avgPrice, color=factor(open2022))) +
        x = "Date", 
        y = "Average Price",
        color = "Station near 2022 expansion?")
+```
+
+```{r}
+# Map of the treated and untreated group
+
+metro<-vect("Metro_Stations_Regional/Metro_Stations_Regional.shp")
+line<-vect("Metro_Lines_Regional/Metro_Lines_Regional.shp")
+
+metrodf<-as.data.frame(metro)
+
+treated<-c("Ashburn", "Loudoun Gateway", "Dulles International Airport", 
+       "Innovation Center", "Herndon", "Reston Town Center")
+untreated<-c("Vienna/Fairfax-GMU", "Dunn Loring-Merrifield", "West Falls Church",
+       "East Falls Church", "Ballston MU", "Virginia Square-GMU", "Clarendon",
+       "Court House", "Rosslyn", "Arlington Cemetery", "Pentagon", "Pentagon City",
+       "Crystal City", "Ronald Reagan Washington National Airport", "Potomac Yard",
+       "Braddock Road", "King St-Old Town", "Eisenhower Ave", "Huntington",
+       "Van Dorn Street", "Franconia-Springfield")
+
+silver_2022 <- buffer(subset(metro, metro$NAME %in% treated), width=2414)
+other_stations <- buffer(subset(metro, metro$NAME %in% untreated), width=2414)
+
+# Project zip codes in the treated stations buffer
+va2 <- vect("VA/VA_Zip_Codes.shp")
+va_project2 <- project(va2, crs(metro))
+va_project2 <- terra::makeValid(va_project2)
+va_2022 <- terra::intersect(va_project2, silver_2022)
+va_2022_df <- as.data.frame(va_2022) |>
+  select(ZIP_CODE) |>
+  rename(ZIPCODE = ZIP_CODE) |>
+  mutate(open = 2022)
+
+# Project zip codes in the untreated stations buffer
+va3 <- vect("VA/VA_Zip_Codes.shp")
+va_project3 <- project(va3, crs(metro))
+va_project3 <- terra::makeValid(va_project3)
+other_zips <- terra::intersect(va_project3, other_stations)
+other_zips_df <- as.data.frame(other_zips) |>
+  select(ZIP_CODE) |>
+  rename(ZIPCODE = ZIP_CODE) |>
+  mutate(open = "other_stations")
+
+# Create the overlay
+plot(line)
+plot(silver_2022, col="red", add=TRUE)
+plot(va_2022, col="red", add=TRUE)
+plot(other_zips, col="gold", add=TRUE)
+
+legend("topright", legend=c("Treated", "Untreated"), fill=c("red", "gold"), border="black", xpd = TRUE)
 ```
 
 # Questions for Week 5
