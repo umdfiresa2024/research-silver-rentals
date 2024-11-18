@@ -28,6 +28,7 @@ stations_df<-as.data.frame(silver)
 
 va<-terra::makeValid(vect("VA/VA_Zip_Codes.shp"))
 va_project<-project(va, crs(silver))
+
 va_silver<-terra::intersect(va_project, silver)
 va_silver_df<-as.data.frame(va_silver) |>
     select(ZIP_CODE) |>
@@ -95,3 +96,4 @@ df4 <- subset(df3, CountyName == 'Loudoun County' | CountyName == 'Fairfax Count
 fdf<-merge(df4, silver_dist_df, by="ZIPCODE")
 
 write.csv(fdf, "panel.csv", row.names=F)
+

@@ -10,13 +10,11 @@ editor: visual
 
 The opening of the Silver Line of the Washington Metro System was a major transportation expansion that aimed to improve accessibility and connectivity between Washington, D.C., and the surrounding regions, particularly in Northern Virginia. Transportation improvements such as these can have significant effects on local housing markets, including rental prices, as they increase convenience and reduce commuting times for residents. Proximity to public transit is a desirable factor for many renters, often leading to rental price increases in areas adjacent to new transit lines (Peng et al., 2023).
 
-This research seeks to analyze the rental price effects following the expansion of the Silver Line in 2022, specifically focusing on how rents have changed for each zip code in Arlington,  Fairfax,  Loudoun counties. Analyzing rental price trends along the Silver Line will reveal how transit-oriented development (TOD) impacts housing affordability. This study will provide valuable insights for urban planners and policymakers on managing housing costs to ensure affordability in these neighborhoods. This analysis will provide valuable insights into how new infrastructure projects can influence housing affordability in rapidly growing metropolitan areas, contributing to urban planning and housing policy discussions.
+This research seeks to analyze the rental price effects following the expansion of the Silver Line in 2022, specifically focusing on how rents have changed for each zip code in the Arlington, Fairfax, and Loudoun counties. This study will provide valuable insights for urban planners and policymakers on managing housing costs to ensure affordability in these neighborhoods. This analysis will provide valuable insights into how new infrastructure projects can influence housing affordability in rapidly growing metropolitan areas, contributing to urban planning and housing policy discussions.
 
 ## Literature Review:
 
 There is a variety of literature about the impact that different types of transit have on either rent prices or house prices. Peng et. al (2024) used difference-in-difference modeling to find the change in rental prices after the announcement of the Purple Line light rail construction in Maryland. The two or more bedroom units saw rent increases, however, there is no effect on the one bedroom units due to the increasing supply and high turnover (Peng et. al., 2024). Peng and Knaap (2023) also showed that home values increase when houses are closer to the planned Purple Line construction. At the same time, the home values will not increase when there is an existing metro station near the future light rail station (Peng and Knaap, 2023). Although these studies are noteworthy, the existing literature is not aligned with our area of interest. Our study will only focus on how the opening of the Silver Line extension in Northern Virginia will impact rental prices. 
-
-Step 1. Install necessary packages.
 
 ```{r}
 #install.packages("tidyverse")
@@ -24,17 +22,13 @@ Step 1. Install necessary packages.
 
 ```
 
-Step 2. Declare that you will use these packages in this session.
-
 ```{r}
+#| warnings: false
+#| message: false
 library("tidyverse")
 library("kableExtra")
 
 ```
-
-Step 3. Upload the dataframe that you have created in Spring 2024 into the repository.
-
-Step 4. Open the dataframe into the RStudio Environment.
 
 ```{r}
 df<-read.csv("panel.csv")
@@ -43,40 +37,22 @@ df2<-df %>%
   mutate(date = as.Date(Date, format = "%Y.%m.%d"), month = month(date), year = year(date))
 ```
 
-Step 5. Use the **head** and **kable** function showcase the first 10 rows of the dataframe to the reader.
+The following output is the top ten observations of our data frame.
 
 ```{r}
 kable(head(df2))
 ```
 
-## Question 1: What is the frequency of this data frame?
-
-Answer: Monthly
-
-## Question 2: What is the cross-sectional (geographical) unit of this data frame?
-
-Answer: Zip code
-
-Step 6. Use the **names** function to display all the variables (column) in the dataframe.
+The frequency of this dataframe is monthly and the cross-sectional unit is the zip code.
 
 ```{r}
 names(df2)
 
 ```
 
-## Question 3: Which column represents the treatment variable of interest?
+The treatment variables of interest are open2022 and post. The treated group consists of rental prices after the silver line expansion opening(in November 2022) that are within 1.5 miles of the expansion. The control group consists of rental prices in Fairfax and Loudoun county that were either listed before the expansion opening or farther than 1.5 miles from the expansion.
 
-Answer: open2022 and post
-
-Treatment Group: Rental prices after the silver line expansion opening(Nov 2022) within 1.5 miles of the silver line expansion
-
-Control Group: Rental prices in Fairfax and Loudoun county that either are farther than 1.5 miles from the silver line expansion, or were listed before the silver line expansion opening
-
-## Question 4: Which column represents the outcome variable of interest?
-
-Answer: ZORI
-
-Step 7: Create a boxplot to visualize the distribution of the outcome variable under treatment and no treatment.
+The outcome variable of interest is ZORI, which represents the average price for listings.
 
 ```{r}
 
@@ -86,8 +62,6 @@ ggplot(df3, aes(x=ZORI)) +
   facet_wrap(~open2022)
 ```
 
-Step 8: Fit a regression model $y=\beta_0 + \beta_1 x + \epsilon$ where $y$ is the outcome variable and $x$ is the treatment variable. Use the **summary** function to display the results.
-
 ```{r}
 
 model1<-lm(ZORI ~ open2022*post, data=df2)
@@ -95,17 +69,9 @@ model1<-lm(ZORI ~ open2022*post, data=df2)
 summary(model1)
 ```
 
-## Question 5: What is the predicted value of the outcome variable when treatment=0?
+The predicted value of ZORI is 2075.458 with treatment=0 and 2503.247 with treatment=1.
 
-Answer: 2075.458
-
-## Question 6: What is predicted value of the outcome variable when treatment=1?
-
-Answer: 2075.458 + 426.789 = 2503.247
-
-## Question 7: What is the equation that describes the linear regression above? Please include an explanation of the variables and subscripts.
-
-Answer: $$ZORI_{i, t} = \beta_0 + \beta_1 open2022_i\times post_t + \epsilon_{i,t}$$\
+The following is an equation that represents the above linear regression. $$ZORI_{i, t} = \beta_0 + \beta_1 open2022_i\times post_t + \epsilon_{i,t}$$\
 Where i is zip code and t is month
 
 $open2022$ represents zip codes that are within 1.5 miles of stations that open in 2022.
@@ -114,15 +80,10 @@ $post$ represents opening status of the Silver Line expansion after November 202
 
 $open2022 \times post$ represents zip codes that are within 1.5 miles of stations in 2022 after its opening date.
 
-Question 8: What fixed effects can be included in the regression? What does each fixed effects control for? Please include a new equation that incorporates the fixed effects.
+The following equation represents the linear regression with fixed effects included.\
+$$ZORI_{i,t} = \beta_1 open2022_i \times post_t + \beta_2 open2014 + \beta_3 openother + \zeta_{month} + \theta{year}  + \lambda_{city} + \epsilon_{i,t}$$
 
-Answer: $$ZORI_{i,t} = \beta_1 open2022_i \times post_t + \beta_2 open2014 + \beta_3 openother + \zeta_{month} + \theta{year}  + \lambda_{city} + \epsilon_{i,t}$$
-
-Where $z$ represents the zip code and $m$ represents the current month
-
-Answer: $$ZORI = \beta_0 + \beta_1 open2022:post+ \beta_2 city + \beta_3 zip\_code + \beta_4 month + \beta_5 year + \epsilon$$
-
-## Question 9: What is the impact of the treatment effect once fixed effects are included?
+Where $z$ represents the zip code and $m$ represents the current month $$ZORI = \beta_0 + \beta_1 open2022:post+ \beta_2 city + \beta_3 zip\_code + \beta_4 month + \beta_5 year + \epsilon$$
 
 ```{r}
 model2 <- lm(ZORI ~ open2022 + post + open2022:post + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df)
@@ -141,11 +102,7 @@ model5 <- lm(ZORI ~ dist*post + dist*post_12m_before + dist*post_6m_before + dis
 summary(model5)
 ```
 
-model2 \<- lm(ZORI \~ silver + as.factor(City) + as.factor(ZIPCODE) + as.factor(month) + as.factor(year), data=df2) summary(model2) \`\`\`
-
-## 
-
-Answer: When fixed effects are included, the silver line's effect jumps from 188 to 630.
+When fixed effects are included, the silver line's effect jumps from 188 to 630.
 
 ```{r}
 df6 <- df %>%
@@ -157,7 +114,7 @@ df6 <- df %>%
 opening_date <- as.Date("2022-11-30")
 
 ggplot(df6, aes(x = date, y = avgPrice, color=factor(open2022))) +
-  geom_line() + 
+  geom_line(linewidth=2) + 
   geom_vline(xintercept = as.numeric(opening_date), linetype = "dashed", color = "black") + 
   annotate("text", x = opening_date, y = max(df6$avgPrice), label = "Expansion Open Date", vjust = -0.5, color = "Black") +
   scale_x_date(date_labels = "%Y-%m-%d", date_breaks = "2 years") +

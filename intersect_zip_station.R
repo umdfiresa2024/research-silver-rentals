@@ -50,11 +50,33 @@ va_project2 <- terra::makeValid(va_project2)
 va_2022<-terra::intersect(va_project2, silver_2022)
 va_2022_df<-as.data.frame(va_2022) |>
   select(ZIP_CODE) |>
-  rename(ZIPCODE=ZIP_CODE) |>
+#  rename(ZIPCODE=ZIP_CODE) |>
   mutate(open=2022)
 
+va_zips <- c("20120", "20121", "20147", "20148", "20166", "20170", "20171", "20175", 
+             "20190", "20191", "20194", "22003", "22030", "22031", "22033", "22041", 
+             "22042", "22043", "22044", "22079", "22102", "22153", "22181", "22182", 
+             "22303", "22306", "22310", "22312", "22315")
+
 plot(silver_2022, col="red", alpha=0.5)
+
 plot(va_project2, add=TRUE)
+
+
+va_project_merged <- merge(va_project2, va_2022_df, by="ZIP_CODE")
+va_fl <- subset(va_project2, va_project2$ZIP_CODE %in% va_zips)
+
+bg_color <- "white"
+fl_color <- "#00297b"
+line_color <- "#C0C0C0"
+
+plot(va_fl, col=bg_color)
+plot(va_project_merged, col=fl_color, add=TRUE)
+plot(line, col=line_color, lwd=3, add=TRUE)
+
+add_legend("bottomleft", 
+       legend=c("Treatment Group", "Silver Line"), pch=c(15, 20), 
+       xpd=NA, bg=NA, col=c(fl_color, line_color))
 
 #select other metro stations in Virginia
 other_stations<-buffer(subset(metro, metro$NAME %in% st3), width=2414)
