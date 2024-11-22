@@ -53,6 +53,8 @@ names(df2)
 
 The treatment variables of interest are open2022 and post. The treated group consists of rental prices after the silver line expansion opening(in November 2022) that are within 1.5 miles of the expansion. The control group consists of rental prices in Fairfax and Loudoun county that were either listed before the expansion opening or farther than 1.5 miles from the expansion.
 
+![](Rplot.png){fig-align="left" width="673"}
+
 The outcome variable of interest is ZORI, which represents the average price for listings.
 
 ```{r}
@@ -99,8 +101,8 @@ model3 <- lm(ZORI ~ dist + post + dist:post + open2014 + openother + as.factor(m
 
 model4 <- lm(ZORI ~ open2022*post + open2022*post_12m_before + open2022*post_6m_before + open2022*post_6m_after  + open2022*post_12m_after + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df5)
 model5 <- lm(ZORI ~ dist*post + dist*post_12m_before + dist*post_6m_before + dist*post_6m_after  + dist*post_12m_after + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df5)
-#summary(model2)
-summary(model5)
+summary(model2)
+summary(model4)
 ```
 
 When fixed effects are included, the silver line's effect jumps from 188 to 630.
@@ -195,18 +197,6 @@ Possible explanations why rents do not change:
 -   More people buy houses rather than rent
 
 -   Cost of rent is already high because of other businesses near the metro station
-
-Step 9: Change the document format to gfm
-
-Step 10: Save this document as README.qmd
-
-Step 11: Render the document. README.md file should be created after this process.
-
-Step 12: Push the document back to GitHub and observe your beautiful document in your repository!
-
-Step 13: If your team has a complete dataframe that includes both the treated and outcome variable, you are done with the assignment. If not, make a research plan in Notion to collect data on the outcome and treatment variable and combine it into one dataframe.
-
-## Future Plans:
 
 The house rental prices may not have adjusted immediately as the expansion of the silver line opened. As such, including the time since the expansion opened may help us better understand the silver line's effects on rental prices.
 
