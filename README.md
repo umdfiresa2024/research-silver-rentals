@@ -47,7 +47,7 @@ kable(head(df2))
 |   20120 | 2019.08.31 | 1836.571 | VA    | Fairfax County | Centreville | 2019-08-31 |      0 |    0 |     8 | 2019 |       0 |        0 |        0 |         1 | 14756.27 |
 |   20120 | 2019.09.30 | 1830.839 | VA    | Fairfax County | Centreville | 2019-09-30 |      0 |    0 |     9 | 2019 |       0 |        0 |        0 |         1 | 14756.27 |
 
-The frequency of this dataframe is monthly and the cross-sectional unit is the zip code.
+For this dataframe, as well as our treatment and outcome variables, the frequency is monthly and the geographical unit is the zip code.
 
 ``` r
 names(df2)
@@ -60,13 +60,13 @@ names(df2)
 [16] "dist"      
 ```
 
-The treatment variables of interest are open2022 and post. The treated group consists of rental prices after the silver line expansion opening (in November 2022) that are within 1.5 miles of the expansion. The control group consists of rental prices in Fairfax and Loudoun county that were either listed before the expansion opening or farther than 1.5 miles from the expansion.
+The treatment variables of interest are open2022 and post. The treated group consists of rental prices after the Silver Line expansion opening (in November 2022) that are within 1.5 miles of the expansion. The control group consists of rental prices in Fairfax and Loudoun county that were either listed before the expansion opening or farther than 1.5 miles from the expansion.
+
+The outcome variable of interest is ZORI, which represents the average price for listings.
 
 ## Methodology and Data Visualization
 
 <img src="Rplot.png" data-fig-align="left" width="673"/>
-
-The outcome variable of interest is ZORI, which represents the average price for listings.
 
 ## 
 
@@ -286,6 +286,8 @@ F-statistic: 917.2 on 49 and 5656 DF,  p-value: < 2.2e-16
 ```
 
 When fixed effects are included, the silver line’s effect jumps from 188 to 630.
+
+## Plot
 
 ``` r
 df6 <- df %>%
