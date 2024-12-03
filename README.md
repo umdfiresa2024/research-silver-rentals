@@ -368,8 +368,6 @@ After accounting for fixed effects in our regression analysis, we can see that t
 
 Possible reasons for this lack of an impact may include a high turnover of renters, high supply of rental units, a shift toward people buying houses rather than renting, and other external factors, such as the pandemic. Additionally, rental prices may not have adjusted immediately as the expansion of the Silver Line opened. As such, incorporating the time since the expansion opened in our analysis may help us better understand the Silver Line’s effects on rental prices.
 
-Our
-
 ## Future Plans
 In the future, we can expand upon our research by:
 -   Examining one-bedroom and multi-bedroom unit rental prices separately.
@@ -378,4 +376,5 @@ In the future, we can expand upon our research by:
 
 ## Bibliography
 Peng, Q., & Knaap, G. (2023). When and Where Do Home Values Increase in Response to Planned Light Rail Construction?. *Journal of Planning Education and Research*, 0739456X221133022.
+
 Peng, Q., Knaap, G. J., & Finio, N. (2024). Do Multifamily unit Rents Increase in Response to Light Rail in the Pre-service Period?. *International Regional Science Review*, *47*(5-6), 566-590.
