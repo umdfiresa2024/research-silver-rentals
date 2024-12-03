@@ -2,15 +2,17 @@
 
 ## How did the expansion of the Silver Line of the Washington Metro System impact residential rental prices?
 
-## Introduction:
+## Introduction
 
 The opening of the Silver Line of the Washington Metro System was a major transportation expansion that aimed to improve accessibility and connectivity between Washington, D.C., and the surrounding regions, particularly in Northern Virginia. Transportation improvements such as these can have significant effects on local housing markets, including rental prices, as they increase convenience and reduce commuting times for residents. Proximity to public transit is a desirable factor for many renters, often leading to rental price increases in areas adjacent to new transit lines (Peng et al., 2023).
 
 This research seeks to analyze the rental price effects following the expansion of the Silver Line in 2022, specifically focusing on how rents have changed for each zip code in the Arlington, Fairfax, and Loudoun counties. This study will provide valuable insights for urban planners and policymakers on managing housing costs to ensure affordability in these neighborhoods. This analysis will provide valuable insights into how new infrastructure projects can influence housing affordability in rapidly growing metropolitan areas, contributing to urban planning and housing policy discussions.
 
-## Literature Review:
+## Literature Review
 
-There is a variety of literature about the impact that different types of transit have on either rent prices or house prices. Peng et. al (2024) used difference-in-difference modeling to find the change in rental prices after the announcement of the Purple Line light rail construction in Maryland. The two or more bedroom units saw rent increases, however, there is no effect on the one bedroom units due to the increasing supply and high turnover (Peng et. al., 2024). Peng and Knaap (2023) also showed that home values increase when houses are closer to the planned Purple Line construction. At the same time, the home values will not increase when there is an existing metro station near the future light rail station (Peng and Knaap, 2023). Although these studies are noteworthy, the existing literature is not aligned with our area of interest. Our study will only focus on how the opening of the Silver Line extension in Northern Virginia will impact rental prices.
+There is a variety of literature about the impact that different types of transit have on either rent prices or house prices. Peng et. al (2024) used difference-in-difference modeling to find the change in rental prices after the announcement of the Purple Line light rail construction in Maryland. The two or more bedroom units saw rent increases, however, there is no effect on the one bedroom units due to the increasing supply and high turnover (Peng et al., 2024). Peng and Knaap (2023) also showed that home values increase when houses are closer to the planned Purple Line construction. At the same time, the home values will not increase when there is an existing metro station near the future light rail station (Peng and Knaap, 2023). Although these studies are noteworthy, the existing literature is not aligned with our area of interest. Our study will only focus on how the opening of the Silver Line extension in Northern Virginia will impact rental prices.
+
+## Data Description
 
 ``` r
 # install.packages("tidyverse")
@@ -58,21 +60,21 @@ names(df2)
 [16] "dist"      
 ```
 
-The treatment variables of interest are open2022 and post. The treated group consists of rental prices after the silver line expansion opening(in November 2022) that are within 1.5 miles of the expansion. The control group consists of rental prices in Fairfax and Loudoun county that were either listed before the expansion opening or farther than 1.5 miles from the expansion.
+The treatment variables of interest are open2022 and post. The treated group consists of rental prices after the silver line expansion opening (in November 2022) that are within 1.5 miles of the expansion. The control group consists of rental prices in Fairfax and Loudoun county that were either listed before the expansion opening or farther than 1.5 miles from the expansion.
+
+## Methodology and Data Visualization
 
 <img src="Rplot.png" data-fig-align="left" width="673"/>
 
 The outcome variable of interest is ZORI, which represents the average price for listings.
+
+## 
 
 ``` r
 df3 <- filter(df2, year=="2022")
 ggplot(df3, aes(x=ZORI)) +
   geom_histogram() +
   facet_wrap(~open2022)
-```
-
-```         
-`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
 ![](README_files/figure-commonmark/unnamed-chunk-6-1.png)
@@ -107,6 +109,8 @@ F-statistic: 847.7 on 3 and 5702 DF,  p-value: < 2.2e-16
 
 The predicted value of ZORI is 2075.458 with treatment=0 and 2503.247 with treatment=1.
 
+## Equation
+
 The following is an equation that represents the above linear regression. $$ZORI_{i, t} = \beta_0 + \beta_1 open2022_i\times post_t + \epsilon_{i,t}$$\
 Where i is zip code and t is month
 
@@ -120,6 +124,8 @@ The following equation represents the linear regression with fixed effects inclu
 $$ZORI_{i,t} = \beta_1 open2022_i \times post_t + \beta_2 open2014 + \beta_3 openother + \zeta_{month} + \theta{year}  + \lambda_{city} + \epsilon_{i,t}$$
 
 Where $z$ represents the zip code and $m$ represents the current month $$ZORI = \beta_0 + \beta_1 open2022:post+ \beta_2 city + \beta_3 zip\_code + \beta_4 month + \beta_5 year + \epsilon$$
+
+## Results
 
 ``` r
 model2 <- lm(ZORI ~ open2022 + post + open2022:post + open2014 + openother + as.factor(month) + as.factor(year) + as.factor(City) + as.factor(CountyName), data=df)
@@ -289,11 +295,6 @@ df6 <- df %>%
   mutate(open2022 = ifelse(open2022==1, "Yes", "No"))
 ```
 
-```         
-`summarise()` has grouped output by 'date'. You can override using the
-`.groups` argument.
-```
-
 ``` r
 opening_date <- as.Date("2022-11-30")
 
@@ -361,32 +362,20 @@ legend("topright", legend=c("Treated", "Untreated"), fill=c("red", "gold"), bord
 
 ![](README_files/figure-commonmark/unnamed-chunk-10-1.png)
 
-# Questions for Week 5
+## Discussion
 
-library(“fixest”)
+After accounting for fixed effects in our regression analysis, we can see that the 2022 expansion of the Silver Line did not have a significant effect on rent prices. Rental units listed after the expansion and within 1.5 miles of it did not increase nor decrease in their price more quickly compared to other units. This may contradict the research from Peng et al. (2024), which found that after the Purple Line was announced, units with two bedrooms had more of an increase, while units with one bedroom did not see an effect.
 
-model2 \<- feols(ZORI \~ open2022 + post + open2022:post + open2014 + openother \| month + year + City, data=df2)
+Possible reasons for this lack of an impact may include a high turnover of renters, high supply of rental units, a shift toward people buying houses rather than renting, and other external factors, such as the pandemic. Additionally, rental prices may not have adjusted immediately as the expansion of the Silver Line opened. As such, incorporating the time since the expansion opened in our analysis may help us better understand the Silver Line’s effects on rental prices.
 
-model3 \<- feols(ZORI \~ open2022 + post + open2022:post \| Date + ZIPCODE, data=df2)
+Our
 
-model4 \<- feols(ZORI \~ open2022 + post + open2022:post + open2014 + openother \| Date + City, data=df2)
+## Future Plans
+In the future, we can expand upon our research by:
+-   Examining one-bedroom and multi-bedroom unit rental prices separately.
+-   Taking into account the influence of outside factors, such as the pandemic.
+-   Examining the time since the expansion opened more closely in our analysis.
 
-summary(model2) summary(model3) summary(model4) \`\`\`
-
-Possible explanations why rents do not change:
-
--   High turnover of renters
-
--   Higher supply
-
--   More people buy houses rather than rent
-
--   Cost of rent is already high because of other businesses near the metro station
-
-The house rental prices may not have adjusted immediately as the expansion of the silver line opened. As such, including the time since the expansion opened may help us better understand the silver line’s effects on rental prices.
-
-## References:
-
+## Bibliography
 Peng, Q., & Knaap, G. (2023). When and Where Do Home Values Increase in Response to Planned Light Rail Construction?. *Journal of Planning Education and Research*, 0739456X221133022.
-
-Peng, Q., Knaap, G. J., & Finio, N. (2024). Do Multifamily unit Rents Increase in Response to Light Rail in the Pre-service Period?. *International Regional Science Review*, 47(5-6), 566-590.
+Peng, Q., Knaap, G. J., & Finio, N. (2024). Do Multifamily unit Rents Increase in Response to Light Rail in the Pre-service Period?. *International Regional Science Review*, *47*(5-6), 566-590.
